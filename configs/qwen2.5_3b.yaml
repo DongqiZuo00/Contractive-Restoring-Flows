@@ -1,0 +1,24 @@
+# CRF Distillation: Regime B — Aggressive Compression (20×)
+# Teacher: Qwen2.5-72B → Student: Qwen2.5-3B
+
+student_model: Qwen/Qwen2.5-3B
+teacher_model: Qwen/Qwen2.5-72B
+trajectory_dir: trajectories/qwen72b/
+output_dir: checkpoints/crf_3b/
+
+alpha: 0.10
+sigma: 0.01
+lambda_crf: 0.5
+tau: null
+eps_gate: null
+
+lr: 2e-5
+num_epochs: 3
+batch_size: 4
+grad_accum_steps: 4
+warmup_ratio: 0.05
+weight_decay: 0.01
+max_seq_len: 4096
+
+eval_benchmarks: [aime, mbpp, livecodebench]
+seeds: [42, 43, 44]

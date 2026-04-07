@@ -1,0 +1,45 @@
+# CRF Local Verification — Single GPU (RTX 5070, 12GB)
+# Teacher: Qwen2.5-3B → Student: Qwen2.5-0.5B
+#
+# VRAM budget:
+#   Trajectory collection: 3B bf16 ≈ 6GB + overhead ≈ 8GB ✓
+#   Training: 0.5B bf16 ≈ 1GB + optimizer ≈ 3GB + CRF ≈ 5GB ✓
+#   (teacher and student never co-reside on GPU)
+#
+# This is NOT for reproducing paper numbers (which use 72B→{7B,3B,0.5B}).
+# It verifies that:
+#   1. The CRF loss computes and backprops correctly
+#   2. Training converges (SFT + CRF losses decrease)
+#   3. ‖P⊥Jₗ‖₂ moves toward 1−α on active layers
+#   4. The dimension projector and layer mapping work
+
+teacher_model: Qwen/Qwen2.5-3B
+student_model: Qwen/Qwen2.5-0.5B
+output_dir: outputs/local_verify
+
+# Dimensions (auto-detected, listed for reference)
+# d_teacher: 2048
+# d_student: 896
+# L_teacher: 36
+# L_student: 24
+
+# CRF hyperparameters (same as paper)
+alpha: 0.10
+sigma: 0.01
+lambda_crf: 0.5
+
+# Training (reduced for local verification)
+lr: 2e-5
+num_epochs: 2
+batch_size: 1
+grad_accum_steps: 4
+max_seq_len: 512
+gradient_checkpointing: true
+
+# Data (small synthetic set)
+num_train_samples: 50
+num_eval_samples: 10
+
+# Measurement
+num_projections: 32     # Paper uses 64, reduced for speed
+fd_step: 1e-3

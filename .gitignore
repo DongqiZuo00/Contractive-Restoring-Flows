@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+.eggs/
+*.pt
+*.bin
+*.safetensors
+checkpoints/
+trajectories/
+wandb/
+.lake/
+lake-packages/
+lean_packages/
+*.olean

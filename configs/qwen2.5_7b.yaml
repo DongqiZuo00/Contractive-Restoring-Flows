@@ -1,0 +1,30 @@
+# CRF Distillation: Regime A — Standard Compression (10×)
+# Teacher: Qwen2.5-72B → Student: Qwen2.5-7B
+
+student_model: Qwen/Qwen2.5-7B
+teacher_model: Qwen/Qwen2.5-72B
+trajectory_dir: trajectories/qwen72b/
+output_dir: checkpoints/crf_7b/
+
+# CRF hyperparameters
+alpha: 0.10          # Contraction coefficient; ‖P⊥Jₗ‖₂ → 1−α = 0.90
+sigma: 0.01          # Probe noise scale; Taylor validity: σ‖J_f‖₂ ≪ 1
+lambda_crf: 0.5      # Balance L_SFT + λ·L_CRF
+tau: null             # Auto-calibrated from 5th percentile of {μₗ}
+eps_gate: null        # Auto-set to τ/5
+
+# Training
+lr: 1e-5
+num_epochs: 3
+batch_size: 2
+grad_accum_steps: 8
+warmup_ratio: 0.05
+weight_decay: 0.01
+max_seq_len: 4096
+
+# Evaluation
+eval_benchmarks:
+  - aime
+  - mbpp
+  - livecodebench
+seeds: [42, 43, 44]
